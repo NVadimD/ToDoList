@@ -17,11 +17,13 @@ function addTask(event) {
         done: false
     }
     tasks.push(newTask);
+
+    const cssClass = newTask.done ? 'task-title task-title--done' : 'task-title';
    
 
 
     tasksList.insertAdjacentHTML("beforeEnd", `<li id="${newTask.id}" class="list-group-item d-flex justify-content-between task-item">
-    <span class="task-title">${newTask.text}</span>
+    <span class="${cssClass}">${newTask.text}</span>
     <div class="task-item__buttons">
         <button type="button" data-action="done" class="btn-action">
             <img src="./img/tick.svg" alt="Done" width="18" height="18">
@@ -40,6 +42,15 @@ function addTask(event) {
 function deleteTask(event) {
     if (event.target.dataset.action === 'delete') {
         const parentNode = event.target.closest('li');
+
+        const id = parentNode.id;
+        const index = tasks.findIndex((task) => {
+            if (task.id == id) {
+                return true;
+            }
+        })
+        tasks.splice(index, 1);
+
         parentNode.remove();
         if (tasksList.children.length === 1) {
             emptyList.classList.remove('none');
@@ -50,6 +61,15 @@ function deleteTask(event) {
 function doneTask(event) {
     if (event.target.dataset.action === 'done') {
         const parentNode = event.target.closest('li');
+
+        const id = parentNode.id;
+        const task = tasks.find((task) => {
+            if (task.id == id) {
+                return true;
+            }
+        })
+        task.done = !task.done;
+
         const taskText = parentNode.querySelector('span');
         taskText.classList.toggle('task-title--done');
     }
